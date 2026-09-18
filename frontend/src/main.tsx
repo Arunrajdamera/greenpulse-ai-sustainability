@@ -4,7 +4,7 @@ import {AreaChart, Area, ResponsiveContainer, Tooltip, XAxis, BarChart, Bar, Pie
 import {LayoutDashboard, Bot, ChartNoAxesCombined, Lightbulb, BookOpen, ShieldCheck, Target, Info, Leaf, AlertTriangle, Send, Database} from 'lucide-react';
 import './styles.css';
 
-const API='http://127.0.0.1:8000';
+const API=(import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
 type Finding={id:string;resource_type:string;location:string;observed_value:number;baseline_value:number;unit:string;difference_percent:number;priority:string;reason:string;finding:string};
 const nav=[
   {name:'Dashboard',path:'/',Icon:LayoutDashboard},
