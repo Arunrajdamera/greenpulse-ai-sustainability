@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import os
 import re
@@ -31,7 +31,7 @@ def seed_records():
                     value += 42
                 records.append({"date": str(start + timedelta(days=i)), "location": area,
                     "resource_type": kind, "consumption": round(value, 1), "unit": unit,
-                    "dataset": "Demo Dataset – Simulated Resource Data"})
+                    "dataset": "Demo Dataset â€“ Simulated Resource Data"})
     return records
 
 RECORDS = seed_records()
@@ -130,7 +130,21 @@ def recommendation_for(finding):
       "responsible_ai_note": "Demo-data decision support only. Verify locally with an appropriate human before implementation."}
 
 app = FastAPI(title="Sustainable Campus Resource Assistant", version="1.0.0")
-app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"], allow_methods=["*"], allow_headers=["*"])
+frontend_origin = os.getenv(
+    "FRONTEND_ORIGIN",
+    "https://greenpulse-ai-sustainability-1.onrender.com"
+).rstrip("/")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        frontend_origin,
+    ],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class AnalysisRequest(BaseModel): resource_type: str | None = Field(default=None, max_length=30)
 class ChatRequest(BaseModel): message: str = Field(min_length=3, max_length=500)
@@ -141,21 +155,21 @@ def health(): return {"status":"ok", "ai_mode":"Demo AI Mode", "provider": os.ge
 
 @app.get("/api/resources")
 def resources(resource_type: str | None = None):
-    return {"dataset":"Demo Dataset – Simulated Resource Data", "items":[r for r in RECORDS if not resource_type or r["resource_type"].lower()==resource_type.lower()]}
+    return {"dataset":"Demo Dataset â€“ Simulated Resource Data", "items":[r for r in RECORDS if not resource_type or r["resource_type"].lower()==resource_type.lower()]}
 
 @app.get("/api/resources/summary")
 def summary():
     counts = Counter(r["resource_type"] for r in RECORDS)
-    return {"dataset":"Demo Dataset – Simulated Resource Data", "total_records":len(RECORDS), "by_resource":counts, "high_consumption_alerts":len(analyze()), "recommendations_generated":len(analyze()), "sustainability_actions":4}
+    return {"dataset":"Demo Dataset â€“ Simulated Resource Data", "total_records":len(RECORDS), "by_resource":counts, "high_consumption_alerts":len(analyze()), "recommendations_generated":len(analyze()), "sustainability_actions":4}
 
 @app.get("/api/resources/trends")
 def trends():
     daily = defaultdict(lambda: defaultdict(float))
     for r in RECORDS: daily[r["date"]][r["resource_type"]] += r["consumption"]
-    return {"dataset":"Demo Dataset – Simulated Resource Data", "items":[{"date":d, **{k:round(v,1) for k,v in vals.items()}} for d,vals in sorted(daily.items())]}
+    return {"dataset":"Demo Dataset â€“ Simulated Resource Data", "items":[{"date":d, **{k:round(v,1) for k,v in vals.items()}} for d,vals in sorted(daily.items())]}
 
 @app.post("/api/analyze")
-def analysis(payload: AnalysisRequest): return {"dataset":"Demo Dataset – Simulated Resource Data", "findings": analyze(payload.resource_type)}
+def analysis(payload: AnalysisRequest): return {"dataset":"Demo Dataset â€“ Simulated Resource Data", "findings": analyze(payload.resource_type)}
 
 @app.post("/api/recommendations")
 def recommendations(payload: RecommendationRequest): return {"workflow":["Resource Analysis Agent","Knowledge Retrieval Agent","Recommendation Agent","Responsible AI Check"], "items":[recommendation_for(f) for f in analyze(payload.resource_type)]}
@@ -185,3 +199,4 @@ def sdgs(): return {"primary":{"number":"12","title":"Responsible Consumption an
 
 @app.get("/api/responsible-ai")
 def responsible_ai(): return {"principles":["Transparency: demo mode and simulated data are labelled.","Explainability: alerts show observed values and baselines.","Privacy: no personal data is collected.","Grounding: chat returns local knowledge sources.","Human oversight: review recommendations before implementation.","Limitations: this prototype does not represent real campus consumption."]}
+
