@@ -1,6 +1,10 @@
 # AI-Powered Sustainable Campus Resource Assistant
 
-A polished student prototype for the **1M1B AI for Sustainability Virtual Internship**, focused on **SDG 12: Responsible Consumption and Production**. It combines transparent analysis of a clearly labelled simulated dataset, local retrieval-augmented responses, an agentic recommendation workflow, and visible responsible-AI safeguards.
+A polished student prototype for the **1M1B AI for Sustainability Virtual Internship**, focused on **SDG 12: Responsible Consumption and Production**.
+
+**Live Deployment:** https://greenpulse-ai-sustainability-1.onrender.com/
+
+It combines transparent analysis of a clearly labelled simulated dataset, local retrieval-augmented responses, an agentic recommendation workflow, and visible responsible-AI safeguards.
 
 ## Important data notice
 
